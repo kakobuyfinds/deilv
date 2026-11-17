@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <title>SuperBuy spreadsheet | CAFANS Finds &amp; Price Comparison</title>
+  <meta name="description" content="Search real CAFANS listings for shoes, hoodies, T-shirts, jackets and bags. Compare estimated USD prices and check sizes, warehouse photos and shipping before ordering through SuperBuy.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SuperBuy spreadsheet | CAFANS Finds &amp; Price Comparison">
+  <meta property="og:description" content="Browse CAFANS product listings, compare item prices and build a shortlist for SuperBuy.">
+  <!--
+    文件名 index.html。
+    搜索结果参考 https://rep.tools/guides/superbuy-spreadsheet 和 https://superbuyspreadsheet.org/。
+    前者侧重下单说明，后者侧重大目录。此页把可搜索的真实商品、价格口径和到手成本估算放在同一页。
+    未提供新站公开网址，Google 和 Bing 尚未提交。上线后用最终公开网址补充自引用 canonical，
+    再通过 Google Search Console 的网址检查请求编入索引，并通过 Bing Webmaster Tools 提交网址。
+  -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "SuperBuy spreadsheet",
+      "inLanguage": "en",
+      "description": "An independent shopping guide with a searchable selection of CAFANS listings and an order cost calculator."
+    }
+  </script>
+  <style>
+    :root{color-scheme:light;--ink:#172e25;--muted:#4e6157;--paper:#f4f5ec;--surface:#fff;--green:#164b37;--line:#d4ddd2;--lime:#e2f4a6}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);font:1rem/1.6 "Instrument Sans",system-ui,sans-serif}
+    [hidden]{display:none!important}
+    :focus-visible{outline:3px solid #8b5311;outline-offset:4px}
+    a{color:var(--green);text-underline-offset:.2em}
+    .wrap{width:min(1100px,calc(100% - 2rem));margin-inline:auto}
+    .top{background:var(--surface);border-bottom:1px solid var(--line)}
+    .top .wrap,nav,.actions{display:flex;flex-wrap:wrap;align-items:center;gap:1rem}
+    .top .wrap{justify-content:space-between;padding-block:.85rem}
+    nav a{font-size:.9rem}
+    .hero{background:var(--green);color:white}
+    .hero .wrap{display:grid;grid-template-columns:1.45fr 1fr;align-items:center;gap:2rem;padding-block:clamp(2.5rem,7vw,6rem)}
+    h1,h2,h3,p{margin:0}
+    h1{font-family:"Instrument Serif",Georgia,serif;font-size:clamp(2.8rem,7vw,6.2rem);font-weight:500;letter-spacing:-.055em;line-height:1}
+    h2{font-size:clamp(1.55rem,4vw,2.25rem);line-height:1.15;letter-spacing:-.035em}
+    h3{font-size:1rem;line-height:1.35}
+    .hero p{margin-top:1rem;max-width:50ch;color:#e2eee5}
+    figure{margin:0;background:#224c3d;border-radius:1rem;overflow:hidden}
+    figure img{display:block;width:100%;aspect-ratio:4/3;object-fit:contain;background:#e8ece3}
+    figcaption{padding:.55rem .9rem;font-size:.86rem}
+    .actions{margin-top:1.5rem}
+    .button{display:inline-block;border:1px solid var(--lime);border-radius:.55rem;background:var(--lime);color:var(--ink);padding:.7rem 1rem;text-decoration:none;font-weight:700}
+    .button.secondary{background:transparent;color:white}
+    main section{padding-block:clamp(2rem,5vw,4rem);border-bottom:1px solid var(--line)}
+    .intro,.note{margin-top:.65rem;color:var(--muted)}
+    .note{font-size:.9rem}
+    .filters,.cost-fields{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-top:1.25rem}
+    label{display:grid;gap:.35rem;font-weight:650}
+    input,select{width:100%;min-height:2.8rem;border:1px solid #819487;border-radius:.45rem;background:white;color:var(--ink);font:inherit;padding:.4rem .65rem}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}
+    .card,.panel,details{border:1px solid var(--line);border-radius:.75rem;background:white;padding:1rem}
+    .card{display:flex;flex-direction:column;align-items:flex-start;gap:.55rem}
+    .card small{color:var(--muted)}
+    .card h3{flex:1}
+    .price{font-weight:750}
+    .price span{font-size:.83rem;font-weight:400;color:var(--muted)}
+    .steps{padding-left:1.4rem;margin-bottom:0}
+    .steps li+li{margin-top:.6rem}
+    .panel{margin-top:1rem}
+    .cost-fields{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:0}
+    output{display:block;margin-top:1rem;font-weight:750}
+    details{margin-top:.7rem}
+    details p{margin-top:.5rem}
+    summary{cursor:pointer;font-weight:700}
+    footer{padding-block:1.5rem;color:var(--muted);font-size:.9rem}
+    @media(max-width:760px){.hero .wrap{grid-template-columns:1fr}.grid,.cost-fields{grid-template-columns:repeat(2,minmax(0,1fr))}figure{max-width:34rem}}
+    @media(max-width:490px){.filters,.cost-fields,.grid{grid-template-columns:1fr}}
+  </style>
+<link rel="canonical" href="https://kakobuyfinds.github.io/deilv/">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <strong>SuperBuy shopping guide</strong>
+      <nav aria-label="On this page">
+        <a href="#catalog">Catalog</a>
+        <a href="#order">How to order</a>
+        <a href="#cost">Cost calculator</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1>SuperBuy spreadsheet</h1>
+        <p>Browse shoes, streetwear and bags from CAFANS. Compare item prices, confirm your variant and estimate the full order cost before choosing a shipping route.</p>
+        <div class="actions">
+          <a class="button" href="https://cafans.com">SuperBuy spreadsheet</a>
+          <a class="button secondary" href="https://cafans.com">Buy it now</a>
+        </div>
+      </div>
+      <figure>
+        <img src="https://cafans.com/cafans-assets/agent-topics-v1/products/goods-135939.webp" alt="Casual shoes from the CAFANS product catalog" width="640" height="480" fetchpriority="high">
+        <figcaption>Casual Shoes · CAFANS listing photo</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section id="order" aria-labelledby="order-title">
+      <h2 id="order-title">From a CAFANS listing to a SuperBuy order</h2>
+      <ol class="steps">
+        <li>Open a CAFANS product page, select <strong>Buy Link</strong> and choose <strong>SuperBuy</strong> if it is available. If the agent link fails, copy the original seller URL and check whether SuperBuy can open it.</li>
+        <li>Compare the seller’s measurements with an item you already own. Save the selected color, size and quantity before placing the order.</li>
+        <li>When warehouse QC photos are available, compare the delivered item with your saved variant. Confirm your shipping quote using the destination and the packed parcel details.</li>
+      </ol>
+    </section>
+
+    <section id="catalog" aria-labelledby="catalog-title">
+      <h2 id="catalog-title">CAFANS product catalog</h2>
+      <p class="intro">Browse by category or search by product name or CAFANS listing ID.</p>
+      <p class="note">Source: <a href="https://cafans.com/agents/superbuy/spreadsheet/">CAFANS SuperBuy catalog</a>. Item prices are from the November 14, 2026 snapshot. USD amounts are estimates. Check current variant pricing, fees and shipping before ordering.</p>
+      <div class="filters" id="filters" hidden>
+        <label>Product name or ID <input id="query" type="search" aria-controls="products"></label>
+        <label>Category
+          <select id="category" aria-controls="products">
+            <option value="">All categories</option>
+            <option>Shoes</option>
+            <option>Hoodies &amp; sweaters</option>
+            <option>T-shirts</option>
+            <option>Jackets</option>
+            <option>Bags</option>
+          </select>
+        </label>
+      </div>
+      <p class="note" id="count" role="status">10 products</p>
+      <div class="grid" id="products">
+        <article class="card" data-id="135939" data-category="Shoes">
+          <small>Shoes</small><h3><a href="https://cafans.com/goods-135939.html">Casual Shoes</a></h3>
+          <p class="price">≈ US$125.90 <span>· CNY 840.00</span></p>
+        </article>
+        <article class="card" data-id="139139" data-category="Hoodies &amp; sweaters">
+          <small>Hoodies &amp; sweaters</small><h3><a href="https://cafans.com/goods-139139.html">GD Printed Hoodie Collection</a></h3>
+          <p class="price">≈ US$26.98 <span>· CNY 180.00</span></p>
+        </article>
+        <article class="card" data-id="137665" data-category="T-shirts">
+          <small>T-shirts</small><h3><a href="https://cafans.com/goods-137665.html">G Printed T-Shirt 1 CY</a></h3>
+          <p class="price">≈ US$25.18 <span>· CNY 168.00</span></p>
+        </article>
+        <article class="card" data-id="136280" data-category="Jackets">
+          <small>Jackets</small><h3><a href="https://cafans.com/goods-136280.html">Jacket ZMR16</a></h3>
+          <p class="price">≈ US$23.02 <span>· CNY 153.60</span></p>
+        </article>
+        <article class="card" data-id="138504" data-category="Bags">
+          <small>Bags</small><h3><a href="https://cafans.com/goods-138504.html">ZMR16 Classic Nylon Shoulder and Crossbody Bag</a></h3>
+          <p class="price">≈ US$77.34 <span>· CNY 516.00</span></p>
+        </article>
+        <article class="card" data-id="135940" data-category="Shoes">
+          <small>Shoes</small><h3><a href="https://cafans.com/goods-135940.html">LB-01 Unisex Casual Shoes</a></h3>
+          <p class="price">≈ US$48.20 <span>· CNY 321.60</span></p>
+        </article>
+        <article class="card" data-id="136932" data-category="Hoodies &amp; sweaters">
+          <small>Hoodies &amp; sweaters</small><h3><a href="https://cafans.com/goods-136932.html">Dq Autumn Sweatshirt</a></h3>
+          <p class="price">≈ US$35.52 <span>· CNY 237.00</span></p>
+        </article>
+        <article class="card" data-id="139325" data-category="T-shirts">
+          <small>T-shirts</small><h3><a href="https://cafans.com/goods-139325.html">E-1 T-Shirt</a></h3>
+          <p class="price">≈ US$14.21 <span>· CNY 94.80</span></p>
+        </article>
+        <article class="card" data-id="141075" data-category="Jackets">
+          <small>Jackets</small><h3><a href="https://cafans.com/goods-141075.html">JS.Ate Heart-Motif Padded Jacket</a></h3>
+          <p class="price">≈ US$74.64 <span>· CNY 498.00</span></p>
+        </article>
+        <article class="card" data-id="137732" data-category="Bags">
+          <small>Bags</small><h3><a href="https://cafans.com/goods-137732.html">YY08 D All-Over Print Small Tote and Crossbody Bag</a></h3>
+          <p class="price">≈ US$37.77 <span>· CNY 252.00</span></p>
+        </article>
+      </div>
+    </section>
+
+    <section id="cost" aria-labelledby="cost-title">
+      <h2 id="cost-title">Estimate your total order cost</h2>
+      <p class="intro">Enter the amounts quoted for your order in USD. Count each charge once if the shipping quote already includes insurance, handling or taxes.</p>
+      <div id="calculator" class="panel" hidden>
+        <div class="cost-fields">
+          <label>Items (USD)<input id="items" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"></label>
+          <label>Seller-to-warehouse shipping (USD)<input id="domestic" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"></label>
+          <label>International shipping (USD)<input id="shipping" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"></label>
+          <label>Service and payment fees (USD)<input id="fees" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"></label>
+          <label>Insurance (USD)<input id="insurance" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"></label>
+          <label>Estimated import charges (USD)<input id="import" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"></label>
+        </div>
+        <output id="total" for="items domestic shipping fees insurance import" aria-live="polite">Subtotal of entered amounts: $0.00</output>
+      </div>
+      <noscript><p class="note">Add the item subtotal, domestic and international shipping, fees, insurance and estimated import charges to compare your total.</p></noscript>
+    </section>
+
+    <section id="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">SuperBuy spreadsheet FAQ</h2>
+      <details>
+        <summary>What is a SuperBuy spreadsheet?</summary>
+        <p>It is a shopping shortlist that groups product links and reference prices so you can compare items before opening their seller listings through SuperBuy. This independent guide uses CAFANS listings.</p>
+      </details>
+      <details>
+        <summary>What should I check in warehouse QC photos?</summary>
+        <p>Match the photos to your selected variant and quantity. Look for the expected color, size label and visible condition. If fit is uncertain, check whether you can request a measurement photo before dispatch.</p>
+      </details>
+      <details>
+        <summary>Why can my shipping quote change?</summary>
+        <p>A route may calculate its charge from actual weight or volumetric weight. Packing changes can alter the parcel dimensions, so use the packed weight and dimensions when comparing final quotes.</p>
+      </details>
+      <details>
+        <summary>Do the catalog prices include delivery?</summary>
+        <p>The listed amounts are item-only estimates. Confirm the current price for your selected variant and add delivery, service fees and any applicable import charges separately.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="wrap">Independent SuperBuy shopping guide · Product data from CAFANS</footer>
+  <script>
+    const query = document.getElementById("query");
+    const category = document.getElementById("category");
+    const count = document.getElementById("count");
+    const cards = [...document.querySelectorAll("#products .card")];
+
+    function filterProducts() {
+      const terms = query.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      let visible = 0;
+      for (const card of cards) {
+        const searchable = `${card.querySelector("h3").textContent} ${card.dataset.id} ${card.dataset.category}`.toLowerCase();
+        const categoryMatches = !category.value || card.dataset.category === category.value;
+        card.hidden = !categoryMatches || !terms.every(term => searchable.includes(term));
+        if (!card.hidden) visible++;
+      }
+      count.textContent = visible === 0
+        ? "No matching products. Try another name or category."
+        : `${visible} ${visible === 1 ? "product" : "products"}`;
+    }
+
+    query.addEventListener("input", filterProducts);
+    category.addEventListener("change", filterProducts);
+    filterProducts();
+    document.getElementById("filters").hidden = false;
+
+    const calculator = document.getElementById("calculator");
+    const fields = [...calculator.querySelectorAll("input")];
+    const total = document.getElementById("total");
+    const usd = new Intl.NumberFormat("en-US", {style: "currency", currency: "USD"});
+
+    function calculateTotal() {
+      if (fields.some(field => !field.validity.valid)) {
+        total.value = "Enter non-negative amounts with up to two decimal places.";
+        return;
+      }
+      const cents = fields.reduce((sum, field) =>
+        sum + (field.value ? Math.round(field.valueAsNumber * 100) : 0), 0);
+      total.value = Number.isSafeInteger(cents)
+        ? `Subtotal of entered amounts: ${usd.format(cents / 100)}`
+        : "The entered amounts are too large to total.";
+    }
+
+    calculator.addEventListener("input", calculateTotal);
+    calculateTotal();
+    calculator.hidden = false;
+  </script>
+</body>
+</html>
